@@ -2,6 +2,7 @@ import yfinance as yf
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+import pandas as pd
 
 acao = 'petr4.sa'
 
@@ -51,5 +52,14 @@ y_pred = model.predict(X_test)
 print(y_pred)
 
 acuracia = accuracy_score(y_test, y_pred)
+
+dados = {'Retornos': a1['retornos'],
+         'Predição': y_pred
+         }
+
+df = pd.DataFrame(dados)
+
+# Exiba o DataFrame
+print(df)
 
 print(f"A taxa de acerto do modelo é: {acuracia}")
