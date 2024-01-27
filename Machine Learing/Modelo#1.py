@@ -2,6 +2,7 @@ import yfinance as yf
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+from sklearn import preprocessing
 import pandas as pd
 
 acao = 'petr4.sa'
@@ -40,12 +41,19 @@ a1 = a1.dropna()
 a2 = a1.drop(['retornos', 'pos', 'neg', 'pos_med', 'neg_med'], axis=1)
 
 y1 = a2.drop(['Mean', 'ifr7', 'mercado'], axis=1)
-y2 = a1['retornos'].apply(lambda x: 1 if x > 0 else 0)
+y2 = a1['retornos'].apply(lambda x: 1 if x > 0 else 0).shift(periods=1)
+
+meany2 = y2.mean()
+
+y2 = y2.fillna(meany2)
 
 X_train, X_test, y_train, y_test = train_test_split(a2, y2, test_size=0.2)
 
+lab = preprocessing.LabelEncoder()
+y_transformed = lab.fit_transform(y_train)
+
 model = LogisticRegression()
-model.fit(X_train, y_train)
+model.fit(X_train, y_transformed)
 
 y_pred = model.predict(X_test)
 
@@ -53,7 +61,7 @@ print(y_pred)
 
 acuracia = accuracy_score(y_test, y_pred)
 
-dados = {'Retornos': a1['retornos'],
+dados = {'Retornos': a1.loc[X_test.index, 'retornos'],
          'Predição': y_pred
          }
 
