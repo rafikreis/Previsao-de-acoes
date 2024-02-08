@@ -59,7 +59,6 @@ dados = {'Retornos': a1['retornos'],
 
 df = pd.DataFrame(dados)
 
-# Exiba o DataFrame
 print(df)
 
 print(f"A taxa de acerto do modelo é: {acuracia}")
